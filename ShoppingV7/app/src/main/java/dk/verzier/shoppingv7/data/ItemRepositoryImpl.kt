@@ -52,8 +52,7 @@ class ItemRepositoryImpl @Inject constructor(
 
         for (attempt in 1..maxRetries) {
             try {
-                return foodishApiService.getImage(category).image  // TODO: Pass 'keyword' to API
-
+                return foodishApiService.getImage(category, keyword).image  // TODO: Pass 'keyword' to API
             } catch (e: Exception) {
                 android.util.Log.e("ItemRepository", "Attempt $attempt failed, retrying in ${currentDelay}ms...", e)
 
