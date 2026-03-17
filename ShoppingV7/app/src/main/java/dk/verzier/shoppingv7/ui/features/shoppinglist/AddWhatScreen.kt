@@ -151,6 +151,18 @@ private fun AddWhatScreen(
                         onDismissRequest = { isPizzaDropdownExpanded = false }
                     ) {
                         // TODO: Add a DropdownMenuItem for each pizzaTopping
+                        pizzaToppings.forEach { topping ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = topping)
+                                },
+                                onClick = {
+                                    uiEvents.onWhatChange("pizza $topping")
+                                    isPizzaDropdownExpanded = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
+                            )
+                        }
                     }
                 }
             }

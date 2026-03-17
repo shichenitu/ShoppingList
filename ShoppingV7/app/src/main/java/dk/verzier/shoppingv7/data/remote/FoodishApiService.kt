@@ -10,5 +10,6 @@ interface FoodishApiService {
     suspend fun getImage(
         @Path(/* value = */ "category") category: String,
         // TODO: Add a query parameter for keyword
+        @Query("keyword") keyword: String? = null
     ): FoodishImage
 }
