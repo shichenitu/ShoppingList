@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">NearestToilet</string>
+    <string name="top_bar_label">The nearest toilet is:</string>
+</resources>
