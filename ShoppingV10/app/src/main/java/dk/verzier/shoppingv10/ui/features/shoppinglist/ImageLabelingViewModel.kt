@@ -62,9 +62,43 @@ class ImageLabelingViewModel @Inject constructor(
                 try {
                     // TODO Save image to the gallery (MediaStore)
                     // HINT: Remember to update the _uiState so the UI knows it was successful
+
+                    val contentResolver = context.contentResolver
+
+                    val contentValues = ContentValues().apply {
+                        put(MediaStore.Images.Media.DISPLAY_NAME, "Shopping_Image_${System.currentTimeMillis()}.jpg")
+                        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/ShoppingApp")
+                            put(MediaStore.Images.Media.IS_PENDING, 1)
+                        }
+                    }
+
+                    val destinationUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+
+                    if (destinationUri != null) {
+                        contentResolver.openInputStream(uri)?.use { inputStream ->
+                            contentResolver.openOutputStream(destinationUri)?.use { outputStream ->
+                                inputStream.copyTo(outputStream)
+                            }
+                        }
+
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                            contentValues.clear()
+                            contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
+                            contentResolver.update(destinationUri, contentValues, null, null)
+                        }
+
+                        _uiState.update { it.copy(isPhotoSaved = true, isError = false) }
+
+                    } else {
+                        _uiState.update { it.copy(isPhotoSaved = false, isError = true) }
+                    }
                 } catch (e: Exception) {
                     // In a production app, you might want to show an error state here
                     e.printStackTrace()
+                    _uiState.update { it.copy(isPhotoSaved = false, isError = true) }
                 }
             }
         }
